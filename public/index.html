@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,9 +8,41 @@
     <title>super cool video editor</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 </head>
+
 <body>
-    <h1>Hello</h1>
-    
+
+    <div id="content">
+        <h1>API authorized and loaded!</h1>
+        <button class="btn btn-primary" id="search">Test Search</button>
+    </div>
+
 </body>
 <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+<script>
+
+    document.getElementById('search').addEventListener('click', () => {
+
+        const searchQuery = 'family guy'
+
+        $.ajax({
+            url: '/search',
+            data: {
+                'search_query': searchQuery
+            }
+        }).done((res) => {
+            if (res.error) {
+                // search api call failed
+                throw new Error(`YAPI search failed with error: ${res.error}`);
+
+            } else {
+                // search api call success
+                console.log(res.result)
+            };
+
+        });
+
+    });
+
+</script>
+
 </html>
