@@ -14,15 +14,22 @@
     <div id="content">
         <h1>API authorized and loaded!</h1>
         <button class="btn btn-primary" id="search">Test Search</button>
+        <button class="btn btn-primary" id="download">Test Download</button>
     </div>
 
 </body>
 <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
 <script>
 
+    document.getElementById('download').addEventListener('click', () => {
+        $.ajax({
+            url: '/download'
+        });
+    })
+
     document.getElementById('search').addEventListener('click', () => {
 
-        const searchQuery = 'family guy'
+        const searchQuery = 'family guy clip'
 
         $.ajax({
             url: '/search',
