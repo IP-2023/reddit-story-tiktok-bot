@@ -1,6 +1,8 @@
 # frontend
 IP-2023 frontend and data collector
 
+[Additional info about the project](https://github.com/IP-2023#automated-tiktok-video-generator)
+
 ## download:
 1. node.js
 2. git
