@@ -1,8 +1,8 @@
 const express = require('express');
 require('dotenv').config();
 const { google } = require("googleapis");
-const youtubedl = require('youtube-dl-exec')
-// youtubedl require python 3.7+
+const ytd = require("./src/yt-video-downloader");
+const rc = require("./src/reddit-collector");
 
 const API_KEY = process.env.API_KEY;
 
@@ -27,7 +27,7 @@ app.get('/search', (req, res) => {
         videoDuration: "short"
 
     }).then(response => {
-        downloadVideoContent(response.data.items[0].id.videoId);
+        // ytd.downloadVideoContent(response.data.items[0].id.videoId);
         res.send({
             'result': response.data.items
         });
@@ -44,25 +44,18 @@ app.get('/download', (req, res) => {
 
     const videoId = req.query.video_id;
 
-    downloadVideoContent(videoId);
+    ytd.downloadVideoContent(videoId);
 
 });
 
+app.get('/reddit', (req, res) => {
 
-const downloadVideoContent = (videoId) => {
-    console.log(`attempting to download video ${videoId}`);
+    rc.getTopPosts();
 
-    youtubedl(`https://www.youtube.com/watch?v=${videoId}`, {
-        noCheckCertificates: true,
-        noWarnings: true,
-        preferFreeFormats: true,
-        addHeader: [
-            'referer:youtube.com',
-            'user-agent:googlebot'
-        ]
+})
 
-    });
-};
+
+
 
 
 

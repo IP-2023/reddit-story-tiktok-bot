@@ -19,6 +19,7 @@
             <input type="text" id="input" name="input">
             <button type="button" id="download-field">Submit</button>
         </form>
+        <button class="btn btn-primary" id="reddit">Test Reddit</button>
     </div>
 
 </body>
@@ -56,6 +57,14 @@
                 console.log(res.result)
             };
 
+        });
+
+    });
+
+    document.getElementById('reddit').addEventListener('click', () => {
+
+        $.ajax({
+            url: '/reddit'
         });
 
     });
