@@ -1,5 +1,7 @@
 # frontend
-IP-2023 frontend and data collector
+IP-2023 frontend and data collector. Uses reddit and youtube APIs to source content for tiktok generation
+
+[Additional info about the project](https://github.com/IP-2023#automated-tiktok-video-generator)
 
 ## download:
 1. node.js
