@@ -23,32 +23,62 @@ const USER_AGENT = `TikTokGenerator/1.0 (http://localhost:8888; ${REDDIT_EMAIL})
 //     .catch(err => console.error(err));
 
 
+// const getTopPosts = async () => {
+
+//     const subreddit = 'AskReddit'; // subreddit you want to retrieve posts from
+//     const limit = 10; // number of posts you want to retrieve
+//     const timeframe = 'week' //timeframe of results
+
+//     // Send a request to the Reddit API
+//     const headers = new Headers({
+//         "User-Agent": USER_AGENT
+//     });
+//     fetch(`https://www.reddit.com/r/${subreddit}/top.json?t=${timeframe}limit=${limit}`, { headers })
+//         .then(res => res.json())
+//         .then(data => {
+//             const posts = data.data.children;
+
+//             // Print the titles and self-texts of the posts
+//             posts.forEach(function (post) {
+//                 const title = post.data.title;
+//                 const selftext = post.data.selftext;
+//                 console.log("Title:", title);
+//                 console.log("Self-text:", selftext, "\n");
+//             });
+//         })
+//         .catch(err => console.error(err));
+
+// };
+
 const getTopPosts = async () => {
 
-    const subreddit = 'AskReddit'; // subreddit you want to retrieve posts from
-    const limit = 10; // number of posts you want to retrieve
-    const timeframe = 'week' //timeframe of results
+    const subreddit = 'AskReddit';
 
-    // Send a request to the Reddit API
-    const headers = new Headers({
-        "User-Agent": USER_AGENT
-    });
-    fetch(`https://www.reddit.com/r/${subreddit}/top.json?t=${timeframe}limit=${limit}`, { headers })
-        .then(res => res.json())
-        .then(data => {
-            const posts = data.data.children;
+    const endpoint = `https://www.reddit.com/r/${subreddit}/top.json?t=week`;
 
-            // Print the titles and self-texts of the posts
-            posts.forEach(function (post) {
-                const title = post.data.title;
-                const selftext = post.data.selftext;
-                console.log("Title:", title);
-                console.log("Self-text:", selftext, "\n");
-            });
-        })
-        .catch(err => console.error(err));
+    try {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        const topPosts = data.data.children.map(post => post.data);
 
-};
+        const postPromises = topPosts.map(async post => {
+            const commentsEndpoint = `https://www.reddit.com/r/${subreddit}/comments/${post.id}.json`;
+            const commentsResponse = await fetch(commentsEndpoint);
+            const commentsData = await commentsResponse.json();
+            const comments = commentsData[1].data.children.map(comment => comment.data);
+            return { post, comments };
+        });
+
+        const results = await Promise.all(postPromises);
+
+        console.log('post content collected');
+        return results;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+
+}
 
 // how could I get a screenshot of the reddit post
 // could I follow a link to it?

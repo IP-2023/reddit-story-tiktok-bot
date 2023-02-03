@@ -50,9 +50,15 @@ app.get('/download', (req, res) => {
 
 app.get('/reddit', (req, res) => {
 
-    rc.getTopPosts();
+    rc.getTopPosts().then((posts) => {
 
-})
+        res.send({
+            'posts': posts
+        });
+
+    });
+
+});
 
 
 

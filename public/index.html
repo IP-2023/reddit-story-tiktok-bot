@@ -65,7 +65,15 @@
 
         $.ajax({
             url: '/reddit'
-        });
+        }).done((res) => {
+
+            const posts = res.posts;
+
+            console.log(posts);
+
+            console.log(`Top Post: ${posts[0].post.title}`);
+            console.log(`Top Comment: ${posts[0].comments[0].body}`);
+        })
 
     });
 
