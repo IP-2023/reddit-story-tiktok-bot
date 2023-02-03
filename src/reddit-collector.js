@@ -1,4 +1,5 @@
 require('dotenv').config();
+const puppeteer = require('puppeteer');
 
 const CLIENT_SECRET = process.env.CLIENT_SECRET; // Reddit app's client secret
 const CLIENT_ID = process.env.CLIENT_ID; // Reddit app's client ID
@@ -71,8 +72,16 @@ const getTopPosts = async () => {
 
         const results = await Promise.all(postPromises);
 
-        console.log('post content collected');
+        console.log('Post content collected');
+
+        const targetURL = `https://www.reddit.com${results[0].post.permalink}`;
+
+        console.log(`Attempting to screenshot: ${targetURL}`);
+
+        await takeMultipleScreenshots([targetURL]);
+
         return results;
+
     } catch (error) {
         console.error(error);
         return [];
@@ -80,12 +89,29 @@ const getTopPosts = async () => {
 
 }
 
-// how could I get a screenshot of the reddit post
-// could I follow a link to it?
-// Puppeteer
+async function takeMultipleScreenshots(urls) {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    for (const url of urls) {
+        await page.goto(url);
+        const safeFileName = url.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+        await page.screenshot({ path: `screenshot-${safeFileName}.png` });
+        console.log(`Succesfully downloaded screenshot from: ${url}`);
+    }
+
+    await browser.close();
+}
+
+// takeMultipleScreenshots(['https://www.example1.com', 'https://www.example2.com']);
+
+
+
 
 
 module.exports = { getTopPosts };
+
+
 
 
 
