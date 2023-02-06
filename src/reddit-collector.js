@@ -41,7 +41,7 @@ const getTopPosts = async () => {
 
 
 
-        await tts.downloadAudioFromText('testing the tts generator text');
+        // await tts.downloadAudioFromText(results[0].post.title);
 
 
         return results;
@@ -57,17 +57,28 @@ async function takeMultipleScreenshots(urls) {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    // await page.emulate({
-    //     name: 'iPhone XR',
-    //     display: {
-    //         displayMode: 'dark'
-    //     }
-    // });
+    // Emulate a mobile device - depreciated function pls fix :(
+    await page.emulate(puppeteer.devices['iPhone X']);
+
+    // Enable dark mode by setting the 'prefers-color-scheme' preference
+    await page.emulateMediaFeatures([
+        { name: 'prefers-color-scheme', value: 'dark' },
+    ]);
+
+    // Define the portion of the screen to capture
+    // iPhone X: 1125px x 2436px
+    // how can I change the screenshot clip dimensions based on the size of the post?
+    const clip = {
+        x: 0,
+        y: 60,
+        width: 375,
+        height: 210
+    };
 
     for (const url of urls) {
         await page.goto(url);
         const safeFileName = url.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-        await page.screenshot({ path: `screenshot-${safeFileName}.png` });
+        await page.screenshot({ path: `screenshot-${safeFileName}.png`, clip });
         console.log(`Successfully downloaded screenshot from: ${url}`);
     }
 
