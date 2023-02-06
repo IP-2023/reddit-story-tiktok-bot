@@ -41,7 +41,7 @@ const getTopPosts = async () => {
 
 
 
-        // await tts.downloadAudioFromText(results[0].post.title);
+        await tts.downloadAudioFromText(results[0].post.title);
 
 
         return results;
@@ -68,6 +68,7 @@ async function takeMultipleScreenshots(urls) {
     // Define the portion of the screen to capture
     // iPhone X: 1125px x 2436px
     // how can I change the screenshot clip dimensions based on the size of the post?
+    // sometimes the screenshots are dark because a 'view in app' prompt shows up on mobile browser
     const clip = {
         x: 0,
         y: 60,
