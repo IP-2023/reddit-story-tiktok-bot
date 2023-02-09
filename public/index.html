@@ -40,7 +40,7 @@
 
     document.getElementById('search').addEventListener('click', () => {
 
-        const searchQuery = 'family guy clip'
+        const searchQuery = 'family guy shorts'
 
         $.ajax({
             url: '/search',
@@ -54,7 +54,12 @@
 
             } else {
                 // search api call success
-                console.log(res.result)
+                console.log(res.result);
+                // iterate through results and log the video IDs as template literals with youtube URL formatting
+                res.result.forEach((video) => {
+                    console.log(`https://www.youtube.com/watch?v=${video.id.videoId}`);
+                });
+
             };
 
         });

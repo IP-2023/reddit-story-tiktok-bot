@@ -61,6 +61,7 @@ const output = "tiktok.mp4";
                 options: `9/16*ih:ih`,
                 inputs: ['overlayed']
             }
+
         ]) // add overlayed2 to crop for second image overlay (and second audio overlay)
         .output(output)
         .on("end", () => {

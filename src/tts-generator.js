@@ -30,9 +30,10 @@ const downloadAudioFromText = async (text) => {
         if (err) {
             console.error(err);
         } else {
-            // Write the TTS audio stream to a file
+            // // Write the TTS audio stream to a file
             fs.writeFileSync('output.mp3', data.AudioStream, 'binary');
             console.log('TTS audio file written to output.mp3');
+
         }
     });
 

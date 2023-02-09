@@ -22,7 +22,7 @@ app.get('/search', (req, res) => {
     youtube.search.list({
         part: 'snippet',
         q: searchQuery,
-        maxResults: 5,
+        maxResults: 25, //max 50
         type: "video",
         videoDuration: "short"
 

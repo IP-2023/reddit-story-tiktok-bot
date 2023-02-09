@@ -69,6 +69,8 @@ async function takeMultipleScreenshots(urls) {
     // iPhone X: 1125px x 2436px
     // how can I change the screenshot clip dimensions based on the size of the post?
     // sometimes the screenshots are dark because a 'view in app' prompt shows up on mobile browser
+
+
     const clip = {
         x: 0,
         y: 60,
@@ -81,10 +83,10 @@ async function takeMultipleScreenshots(urls) {
         const safeFileName = url.replace(/[^a-z0-9]/gi, '-').toLowerCase();
         await page.screenshot({ path: `screenshot-${safeFileName}.png`, clip });
         console.log(`Successfully downloaded screenshot from: ${url}`);
-    }
+    };
 
     await browser.close();
-}
+};
 
 
 
