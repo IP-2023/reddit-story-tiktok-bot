@@ -1,6 +1,7 @@
 require('dotenv').config();
 const puppeteer = require('puppeteer');
 const tts = require('./tts-generator');
+const fs = require('fs');
 
 const CLIENT_SECRET = process.env.CLIENT_SECRET; // Reddit app's client secret
 const CLIENT_ID = process.env.CLIENT_ID; // Reddit app's client ID
@@ -34,14 +35,15 @@ const getTopPosts = async () => {
         console.log('Post content collected');
 
         const targetURL = `https://www.reddit.com${results[0].post.permalink}`;
-
-        console.log(`Attempting to screenshot: ${targetURL}`);
+        const targetComment1 = `https://www.reddit.com${results[0].comments[0].permalink}`;
+        const targetComment2 = `https://www.reddit.com${results[0].comments[1].permalink}`;
+        const targetComment3 = `https://www.reddit.com${results[0].comments[2].permalink}`;
 
         await takeMultipleScreenshots([targetURL]);
 
 
 
-        await tts.downloadAudioFromText(results[0].post.title);
+        // await tts.downloadAudioFromText(results[0].post.title);
 
 
         return results;
@@ -54,7 +56,7 @@ const getTopPosts = async () => {
 }
 
 async function takeMultipleScreenshots(urls) {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
 
     // Emulate a mobile device - depreciated function pls fix :(
@@ -79,15 +81,27 @@ async function takeMultipleScreenshots(urls) {
     };
 
     for (const url of urls) {
-        await page.goto(url);
+        console.log(`Attempting to screenshot: ${url}`);
+        await page.goto(url, {
+            waitUntil: "networkidle2",
+        });
+
+        // remove the element with the id 'bottom-sheet'
+        await page.evaluate(() => {
+            const blocker = document.getElementById('bottom-sheet');
+            if (blocker) {
+                blocker.remove();
+            };
+        });
+
         const safeFileName = url.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-        await page.screenshot({ path: `screenshot-${safeFileName}.png`, clip });
+        await page.screenshot({ path: `screenshot-${safeFileName}.png` });
+        //, clip
         console.log(`Successfully downloaded screenshot from: ${url}`);
     };
 
     await browser.close();
 };
-
 
 
 module.exports = { getTopPosts };
