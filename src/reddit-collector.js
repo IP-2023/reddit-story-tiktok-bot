@@ -121,10 +121,10 @@ async function takeMultipleScreenshots(urls) {
                 const body = document.getElementById('-post-rtjson-content').getBoundingClientRect();
                 if (comment) {
                     return {
-                        x: comment.x,
-                        y: comment.y,
-                        width: comment.width,
-                        height: comment.height
+                        x: 0,
+                        y: 385,
+                        width: 375,
+                        height: body.height + 85
                     };
                 } else {
                     return {
@@ -170,5 +170,6 @@ TikTok TTS
 reddit api call sometime fails for seemingly no reason
 
 optimize the screenshot function / clean it up
+sometimes getting the rect fails
 
 */
