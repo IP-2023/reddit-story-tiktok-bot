@@ -69,15 +69,13 @@ async function takeMultipleScreenshots(urls) {
     ]);
 
 
-    let clip;
     for (const url of urls) {
         console.log(`Attempting to screenshot: ${url}`);
         await page.goto(url, {
-            waitUntil: "networkidle2",
+            waitUntil: "networkidle2", // wait for network to be idle for 2 seconds before taking screenshot
         });
-        // wait for network to be idle for 2 seconds before taking screenshot
 
-        clip = await page.evaluate((url, urls) => {
+        const clip = await page.evaluate((url, urls) => {
             // remove the 'view in app' prompt
             const blockers = document.getElementsByTagName('shreddit-experience-tree');
             if (blockers.length) {
@@ -98,47 +96,23 @@ async function takeMultipleScreenshots(urls) {
             if (urls.indexOf(url) === 0) {
                 // if the first url, take a screenshot of the post
                 const target = document.getElementsByTagName('shreddit-post')[0].getBoundingClientRect();
-
-                if (target) {
-                    return {
-                        x: target.x,
-                        y: target.y,
-                        width: target.width,
-                        height: target.height
-                    };
-                } else {
-                    return {
-                        x: 0,
-                        y: 60,
-                        width: 375,
-                        height: 210
-                    };
+                return {
+                    x: target.x || 0,
+                    y: target.y || 60,
+                    width: target.width || 375,
+                    height: target.height || 210
                 };
             } else {
-                // after the first url, take a screenshot of the comment
-                const comment = document.getElementsByTagName('shreddit-comment')[0].getBoundingClientRect();
-                // get the dimensions of the element with the ID ''-post-rtjson-content'
+                // after the first url, take a screenshot of the comment using its body dimensions
                 const body = document.getElementById('-post-rtjson-content').getBoundingClientRect();
-                if (comment) {
-                    return {
-                        x: 0,
-                        y: 385,
-                        width: 375,
-                        height: body.height + 85
-                    };
-                } else {
-                    return {
-                        x: 0,
-                        y: 385,
-                        width: 375,
-                        height: 210
-                    };
+                return {
+                    x: 0,
+                    y: 385,
+                    width: 375,
+                    height: body.height + 85 || 300
                 };
             };
         }, url, urls);
-
-        // wait for 40 seconds
-        // await page.waitFor(40000);
 
         await page.screenshot({ path: `screenshot-${urls.indexOf(url)}.png`, clip });
         console.log(`Successfully downloaded screenshot from: ${url}`);
