@@ -39,7 +39,7 @@ const getTopPosts = async () => {
         const targetComment2 = `https://www.reddit.com${results[0].comments[1].permalink}`;
         const targetComment3 = `https://www.reddit.com${results[0].comments[2].permalink}`;
 
-        await takeMultipleScreenshots([targetURL]);
+        await takeMultipleScreenshots([targetURL, targetComment1, targetComment2, targetComment3]);
 
 
 
@@ -56,7 +56,8 @@ const getTopPosts = async () => {
 }
 
 async function takeMultipleScreenshots(urls) {
-    const browser = await puppeteer.launch({ headless: false });
+    // Toggle headless mode to see the browser in action
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
     // Emulate a mobile device - depreciated function pls fix :(
@@ -67,36 +68,79 @@ async function takeMultipleScreenshots(urls) {
         { name: 'prefers-color-scheme', value: 'dark' },
     ]);
 
-    // Define the portion of the screen to capture
-    // iPhone X: 1125px x 2436px
-    // how can I change the screenshot clip dimensions based on the size of the post?
-    // sometimes the screenshots are dark because a 'view in app' prompt shows up on mobile browser
 
-
-    const clip = {
-        x: 0,
-        y: 60,
-        width: 375,
-        height: 210
-    };
-
+    let clip;
     for (const url of urls) {
         console.log(`Attempting to screenshot: ${url}`);
         await page.goto(url, {
             waitUntil: "networkidle2",
         });
+        // wait for network to be idle for 2 seconds before taking screenshot
 
-        // remove the element with the id 'bottom-sheet'
-        await page.evaluate(() => {
-            const blocker = document.getElementById('bottom-sheet');
-            if (blocker) {
-                blocker.remove();
+        clip = await page.evaluate((url, urls) => {
+            // remove the 'view in app' prompt
+            const blockers = document.getElementsByTagName('shreddit-experience-tree');
+            if (blockers.length) {
+                console.log('Removing shreddit-experience-tree elements');
+                for (const blocker of blockers) {
+                    blocker.remove();
+                }
             };
-        });
+            // remove the ad at the bottom of the page
+            const ad = document.getElementsByTagName('shreddit-comments-page-ad');
+            if (ad.length) {
+                console.log('Removing shreddit-comments-page-ad elements');
+                for (const blocker of ad) {
+                    blocker.remove();
+                }
+            };
 
-        const safeFileName = url.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-        await page.screenshot({ path: `screenshot-${safeFileName}.png` });
-        //, clip
+            if (urls.indexOf(url) === 0) {
+                // if the first url, take a screenshot of the post
+                const target = document.getElementsByTagName('shreddit-post')[0].getBoundingClientRect();
+
+                if (target) {
+                    return {
+                        x: target.x,
+                        y: target.y,
+                        width: target.width,
+                        height: target.height
+                    };
+                } else {
+                    return {
+                        x: 0,
+                        y: 60,
+                        width: 375,
+                        height: 210
+                    };
+                };
+            } else {
+                // after the first url, take a screenshot of the comment
+                const comment = document.getElementsByTagName('shreddit-comment')[0].getBoundingClientRect();
+                // get the dimensions of the element with the ID ''-post-rtjson-content'
+                const body = document.getElementById('-post-rtjson-content').getBoundingClientRect();
+                if (comment) {
+                    return {
+                        x: comment.x,
+                        y: comment.y,
+                        width: comment.width,
+                        height: comment.height
+                    };
+                } else {
+                    return {
+                        x: 0,
+                        y: 385,
+                        width: 375,
+                        height: 210
+                    };
+                };
+            };
+        }, url, urls);
+
+        // wait for 40 seconds
+        // await page.waitFor(40000);
+
+        await page.screenshot({ path: `screenshot-${urls.indexOf(url)}.png`, clip });
         console.log(`Successfully downloaded screenshot from: ${url}`);
     };
 
@@ -122,5 +166,9 @@ video editing library to bring it all together
 
 
 TikTok TTS
+
+reddit api call sometime fails for seemingly no reason
+
+optimize the screenshot function / clean it up
 
 */
