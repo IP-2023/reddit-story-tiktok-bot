@@ -42,9 +42,12 @@ const getTopPosts = async () => {
         await takeMultipleScreenshots([targetURL, targetComment1, targetComment2, targetComment3]);
 
 
+        const postText = results[0].post.title;
+        const commentText1 = results[0].comments[0].body;
+        const commentText2 = results[0].comments[1].body;
+        const commentText3 = results[0].comments[2].body;
 
-        // await tts.downloadAudioFromText(results[0].post.title);
-
+        await tts.downloadAudioFromText([postText, commentText1, commentText2, commentText3]);
 
         return results;
 

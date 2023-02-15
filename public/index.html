@@ -40,7 +40,7 @@
 
     document.getElementById('search').addEventListener('click', () => {
 
-        const searchQuery = 'family guy shorts'
+        const searchQuery = 'minecraft parkour background'
 
         $.ajax({
             url: '/search',
@@ -57,7 +57,7 @@
                 console.log(res.result);
                 // iterate through results and log the video IDs as template literals with youtube URL formatting
                 res.result.forEach((video) => {
-                    console.log(`https://www.youtube.com/watch?v=${video.id.videoId}`);
+                    console.log(`https://www.youtube.com/watch?v=${encodeURIComponent(video.id.videoId)}`);
                 });
 
             };

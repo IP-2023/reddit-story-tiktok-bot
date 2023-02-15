@@ -24,7 +24,7 @@ app.get('/search', (req, res) => {
         q: searchQuery,
         maxResults: 25, //max 50
         type: "video",
-        videoDuration: "short"
+        // videoDuration: "short"
 
     }).then(response => {
         // ytd.downloadVideoContent(response.data.items[0].id.videoId);

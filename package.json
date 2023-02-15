@@ -24,6 +24,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "googleapis": "^110.0.0",
     "puppeteer": "^19.6.3",
-    "youtube-dl-exec": "^2.1.11"
+    "youtube-dl-exec": "^2.1.11",
+    "ytdl-core": "^4.11.2"
   }
 }
