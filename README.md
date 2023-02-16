@@ -5,13 +5,16 @@ IP-2023 frontend and data collector. Uses reddit and youtube APIs to source cont
 
 [WIP Notion article about project](https://furtive-taxicab-a11.notion.site/Short-form-Video-Generator-e518f2871044420b80971f6fafb90692)
 
-## download:
-1. node.js
-2. git
-3. ffmpeg
+# Gallery 
 
-## setup:
-1. open a new terminal and run ```npm install```
-2. you'll need your own ```.env``` file to get started with the api
-3. run terminal command ```node app.js``` to start the webserver 
-4. navigate to ```localhost:8888``` see preview of app
+<div display:inline-block align="left" >
+
+<img src="https://media.discordapp.net/attachments/615036295932280834/1075624393289519174/Untitled.png?width=638&height=929" width="300" />
+
+<img src="https://media.discordapp.net/attachments/615036295932280834/1075624798413144105/Untitled2.png?width=522&height=930" width="250" />
+
+</div
+
+#### Left: Screenshots being taken and cropped based on content size (not my comments)
+
+#### Right: Screenshot of automatically generated video
