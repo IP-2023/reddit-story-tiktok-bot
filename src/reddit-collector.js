@@ -47,7 +47,7 @@ const getTopPosts = async () => {
         const commentText2 = results[0].comments[1].body;
         const commentText3 = results[0].comments[2].body;
 
-        await tts.downloadAudioFromText([postText, commentText1, commentText2, commentText3]);
+        // await tts.downloadAudioFromText([postText, commentText1, commentText2, commentText3]);
 
         return results;
 
@@ -110,7 +110,7 @@ async function takeMultipleScreenshots(urls) {
                 const body = document.getElementById('-post-rtjson-content').getBoundingClientRect();
                 return {
                     x: 0,
-                    y: 385,
+                    y: 435,
                     width: 375,
                     height: body.height + 85 || 300
                 };
@@ -145,6 +145,7 @@ video editing library to bring it all together
 TikTok TTS
 
 reddit api call sometime fails for seemingly no reason
+Error: Evaluation failed: TypeError: Cannot read properties of null (reading 'getBoundingClientRect')
 
 optimize the screenshot function / clean it up
 sometimes getting the rect fails
