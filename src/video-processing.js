@@ -22,6 +22,8 @@ const tts = [postTTS, comment1TTS, comment2TTS, comment3TTS];
 
 const output = "tiktok.mp4";
 
+// WARNING: the following code is a mess and might hurt your eyes
+
 (function () {
     // get the length of each tts audio file using ffprobe and wait for each to finish before continuing
     let promises = [0];
@@ -74,7 +76,7 @@ const output = "tiktok.mp4";
                     inputs: '[7:v]',
                     outputs: 'sc4'
                 },
-                // overlaying them on the background footage
+                // overlaying the screenshots on the background footage
                 {
                     filter: 'overlay',
                     options: {
@@ -92,7 +94,7 @@ const output = "tiktok.mp4";
                         y: '(main_h-overlay_h)/2',
                         enable: `between(t,${durations[1]},${(durations[1] + durations[2])})`
                     },
-                    inputs: ['0:v', 'sc2'],
+                    inputs: ['overlayed1', 'sc2'],
                     outputs: 'overlayed2'
                 },
                 {
@@ -102,7 +104,7 @@ const output = "tiktok.mp4";
                         y: '(main_h-overlay_h)/2',
                         enable: `between(t,${durations[2]},${(durations[2] + durations[3])})`
                     },
-                    inputs: ['0:v', 'sc3'],
+                    inputs: ['overlayed2', 'sc3'],
                     outputs: 'overlayed3'
                 },
                 {
@@ -112,7 +114,7 @@ const output = "tiktok.mp4";
                         y: '(main_h-overlay_h)/2',
                         enable: `between(t,${durations[3]},${(durations[3] + durations[4])})`
                     },
-                    inputs: ['0:v', 'sc4'],
+                    inputs: ['overlayed3', 'sc4'],
                     outputs: 'overlayed4'
                 },
                 // mute the background footage
@@ -125,45 +127,128 @@ const output = "tiktok.mp4";
                     inputs: '0:a',
                     outputs: 'muted'
                 },
-                // overlay tts audio on top of the background footage
+                // overlay each tts audio file on the background footage
+                // offset each audio file by the duration of the previous audio file
+                // {
+                //     filter: 'amix',
+                //     options: {
+                //         inputs: 2,
+                //         duration: 'first'
+                //     },
+                //     inputs: ['2:a', 'muted'],
+                //     outputs: 'overlayedAudio1'
+                // },
+                // {
+                //     filter: 'adelay',
+                //     options: {
+                //         delays: `${durations[0] * 1000} | 0`,
+                //     },
+                //     inputs: 'overlayedAudio1',
+                //     outputs: 'delayed1'
+                // },
+                // {
+                //     filter: 'amix',
+                //     options: {
+                //         inputs: 2,
+                //         duration: 'first'
+                //     },
+                //     inputs: ['4:a', 'delayed1'],
+                //     outputs: 'overlayedAudio2'
+                // },
+                // {
+                //     filter: 'adelay',
+                //     options: {
+                //         delays: `${(durations[1] * 1000)} | 0`,
+                //     },
+                //     inputs: 'overlayedAudio2',
+                //     outputs: 'delayed2'
+                // },
+                // {
+                //     filter: 'amix',
+                //     options: {
+                //         inputs: 2,
+                //         duration: 'first'
+                //     },
+                //     inputs: ['6:a', 'delayed2'],
+                //     outputs: 'overlayedAudio3'
+                // },
+                // {
+                //     filter: 'adelay',
+                //     options: {
+                //         delays: `${(durations[1] * 1000) + (durations[2] * 1000)} | 0`,
+                //     },
+                //     inputs: 'overlayedAudio3',
+                //     outputs: 'delayed3'
+                // },
+                // {
+                //     filter: 'amix',
+                //     options: {
+                //         inputs: 2,
+                //         duration: 'first'
+                //     },
+                //     inputs: ['8:a', 'delayed3'],
+                //     outputs: 'overlayedAudio4'
+                // },
+                // {
+                //     filter: 'adelay',
+                //     options: {
+                //         delays: `${(durations[1] * 1000) + (durations[2] * 1000) + (durations[3] * 1000)} | 0`,
+                //     },
+                //     inputs: 'overlayedAudio4',
+                // },
+
+                {
+                    filter: 'adelay',
+                    options: {
+                        delays: `0 | 0`,
+                    },
+                    inputs: '2:a',
+                    outputs: 'delayed1'
+                },
+                {
+                    filter: 'adelay',
+                    options: {
+                        delays: `${durations[1] * 1000} | ${durations[1] * 1000}`,
+                    },
+                    inputs: '4:a',
+                    outputs: 'delayed2'
+                },
+                {
+                    filter: 'adelay',
+                    options: {
+                        delays: `${(durations[1] * 1000) + (durations[2] * 1000)} | ${(durations[1] * 1000) + (durations[2] * 1000)}`,
+                    },
+                    inputs: '6:a',
+                    outputs: 'delayed3'
+                },
+                {
+                    filter: 'adelay',
+                    options: {
+                        delays: `${(durations[1] * 1000) + (durations[2] * 1000) + (durations[3] * 1000)} | ${(durations[1] * 1000) + (durations[2] * 1000) + (durations[3] * 1000)}`,
+                    },
+                    inputs: '8:a',
+                    outputs: 'delayed4'
+                },
+
+                // mix delayed audio with muted background footage using amix
                 {
                     filter: 'amix',
                     options: {
-                        inputs: 2,
+                        inputs: 5,
                         duration: 'first'
                     },
-                    inputs: ['2:a', 'muted']
+                    inputs: ['muted', 'delayed1', 'delayed2', 'delayed3', 'delayed4'],
+                    // outputs: 'overlayedAudio'
                 },
-                {
-                    filter: 'amix',
-                    options: {
-                        inputs: 2,
-                        duration: durations[2]
-                    },
-                    inputs: ['4:a', 'muted']
-                },
-                {
-                    filter: 'amix',
-                    options: {
-                        inputs: 2,
-                        duration: durations[3]
-                    },
-                    inputs: ['6:a', 'muted']
-                },
-                {
-                    filter: 'amix',
-                    options: {
-                        inputs: 2,
-                        duration: durations[4]
-                    },
-                    inputs: ['8:a', 'muted']
-                },
-                // crop the final product
+
+
+                // crop the final product into a 9:16 aspect ratio
                 {
                     filter: 'crop',
                     options: `9/16*ih:ih`,
-                    inputs: ['overlayed1', 'overlayed2', 'overlayed3', 'overlayed4'],
+                    inputs: ['overlayed4'],
                 }
+
             ])
             .output(output)
             .on("end", () => {
