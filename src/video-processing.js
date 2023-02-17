@@ -33,7 +33,7 @@ const output = "tiktok.mp4";
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(metadata.format.duration);
+                    resolve(metadata.format.duration + 0.5); // add for buffer between clips
                 }
             });
         }));
@@ -81,7 +81,7 @@ const output = "tiktok.mp4";
                     filter: 'overlay',
                     options: {
                         x: '(main_w-overlay_w)/2',
-                        y: '(main_h-overlay_h)/2',
+                        y: 50,
                         enable: `between(t,${durations[0]},${(durations[0] + durations[1])})`
                     },
                     inputs: ['0:v', 'sc1'],
@@ -91,7 +91,7 @@ const output = "tiktok.mp4";
                     filter: 'overlay',
                     options: {
                         x: '(main_w-overlay_w)/2',
-                        y: '(main_h-overlay_h)/2',
+                        y: 50,
                         enable: `between(t,${durations[1]},${(durations[1] + durations[2])})`
                     },
                     inputs: ['overlayed1', 'sc2'],
@@ -101,8 +101,8 @@ const output = "tiktok.mp4";
                     filter: 'overlay',
                     options: {
                         x: '(main_w-overlay_w)/2',
-                        y: '(main_h-overlay_h)/2',
-                        enable: `between(t,${durations[2]},${(durations[2] + durations[3])})`
+                        y: 50,
+                        enable: `between(t,${(durations[1] + durations[2])},${(durations[1] + durations[2] + durations[3])})`
                     },
                     inputs: ['overlayed2', 'sc3'],
                     outputs: 'overlayed3'
@@ -111,8 +111,8 @@ const output = "tiktok.mp4";
                     filter: 'overlay',
                     options: {
                         x: '(main_w-overlay_w)/2',
-                        y: '(main_h-overlay_h)/2',
-                        enable: `between(t,${durations[3]},${(durations[3] + durations[4])})`
+                        y: 50,
+                        enable: `between(t,${(durations[1] + durations[2] + durations[3])},${(durations[1] + durations[2] + durations[3] + durations[4])})`
                     },
                     inputs: ['overlayed3', 'sc4'],
                     outputs: 'overlayed4'
@@ -127,76 +127,26 @@ const output = "tiktok.mp4";
                     inputs: '0:a',
                     outputs: 'muted'
                 },
+                // trim audio of background video to end at the same time as the last tts audio file
+                {
+                    filter: 'atrim',
+                    options: {
+                        duration: `${durations[1] + durations[2] + durations[3] + durations[4]}`
+                    },
+                    inputs: 'muted',
+                    outputs: 'trimmedAudio'
+                },
+                // end the video at the same time as the last tts audio file
+                {
+                    filter: 'trim',
+                    options: {
+                        duration: `${durations[1] + durations[2] + durations[3] + durations[4]}`
+                    },
+                    inputs: 'overlayed4',
+                    outputs: 'trimmedVideo'
+                },
                 // overlay each tts audio file on the background footage
                 // offset each audio file by the duration of the previous audio file
-                // {
-                //     filter: 'amix',
-                //     options: {
-                //         inputs: 2,
-                //         duration: 'first'
-                //     },
-                //     inputs: ['2:a', 'muted'],
-                //     outputs: 'overlayedAudio1'
-                // },
-                // {
-                //     filter: 'adelay',
-                //     options: {
-                //         delays: `${durations[0] * 1000} | 0`,
-                //     },
-                //     inputs: 'overlayedAudio1',
-                //     outputs: 'delayed1'
-                // },
-                // {
-                //     filter: 'amix',
-                //     options: {
-                //         inputs: 2,
-                //         duration: 'first'
-                //     },
-                //     inputs: ['4:a', 'delayed1'],
-                //     outputs: 'overlayedAudio2'
-                // },
-                // {
-                //     filter: 'adelay',
-                //     options: {
-                //         delays: `${(durations[1] * 1000)} | 0`,
-                //     },
-                //     inputs: 'overlayedAudio2',
-                //     outputs: 'delayed2'
-                // },
-                // {
-                //     filter: 'amix',
-                //     options: {
-                //         inputs: 2,
-                //         duration: 'first'
-                //     },
-                //     inputs: ['6:a', 'delayed2'],
-                //     outputs: 'overlayedAudio3'
-                // },
-                // {
-                //     filter: 'adelay',
-                //     options: {
-                //         delays: `${(durations[1] * 1000) + (durations[2] * 1000)} | 0`,
-                //     },
-                //     inputs: 'overlayedAudio3',
-                //     outputs: 'delayed3'
-                // },
-                // {
-                //     filter: 'amix',
-                //     options: {
-                //         inputs: 2,
-                //         duration: 'first'
-                //     },
-                //     inputs: ['8:a', 'delayed3'],
-                //     outputs: 'overlayedAudio4'
-                // },
-                // {
-                //     filter: 'adelay',
-                //     options: {
-                //         delays: `${(durations[1] * 1000) + (durations[2] * 1000) + (durations[3] * 1000)} | 0`,
-                //     },
-                //     inputs: 'overlayedAudio4',
-                // },
-
                 {
                     filter: 'adelay',
                     options: {
@@ -237,16 +187,14 @@ const output = "tiktok.mp4";
                         inputs: 5,
                         duration: 'first'
                     },
-                    inputs: ['muted', 'delayed1', 'delayed2', 'delayed3', 'delayed4'],
+                    inputs: ['trimmedAudio', 'delayed1', 'delayed2', 'delayed3', 'delayed4'],
                     // outputs: 'overlayedAudio'
                 },
-
-
                 // crop the final product into a 9:16 aspect ratio
                 {
                     filter: 'crop',
                     options: `9/16*ih:ih`,
-                    inputs: ['overlayed4'],
+                    inputs: ['trimmedVideo'],
                 }
 
             ])
@@ -261,9 +209,5 @@ const output = "tiktok.mp4";
     }).catch((err) => {
         console.log(err);
     });
-
-    // crop has invalid argument
-    // amix has unrecognized options
-    // only the first screenshot is overlayed
 
 })();
