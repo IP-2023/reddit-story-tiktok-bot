@@ -54,25 +54,25 @@ const output = "tiktok.mp4";
                 // scaling reddit screenshots
                 {
                     filter: 'scale',
-                    options: 'iw/3:-1',
+                    options: 'iw/2:-1',
                     inputs: '[1:v]',
                     outputs: 'sc1'
                 },
                 {
                     filter: 'scale',
-                    options: 'iw/3:-1',
+                    options: 'iw/2:-1',
                     inputs: '[3:v]',
                     outputs: 'sc2'
                 },
                 {
                     filter: 'scale',
-                    options: 'iw/3:-1',
+                    options: 'iw/2:-1',
                     inputs: '[5:v]',
                     outputs: 'sc3'
                 },
                 {
                     filter: 'scale',
-                    options: 'iw/3:-1',
+                    options: 'iw/2:-1',
                     inputs: '[7:v]',
                     outputs: 'sc4'
                 },
@@ -81,7 +81,7 @@ const output = "tiktok.mp4";
                     filter: 'overlay',
                     options: {
                         x: '(main_w-overlay_w)/2',
-                        y: 50,
+                        y: 80,
                         enable: `between(t,${durations[0]},${(durations[0] + durations[1])})`
                     },
                     inputs: ['0:v', 'sc1'],
@@ -91,7 +91,7 @@ const output = "tiktok.mp4";
                     filter: 'overlay',
                     options: {
                         x: '(main_w-overlay_w)/2',
-                        y: 50,
+                        y: 80,
                         enable: `between(t,${durations[1]},${(durations[1] + durations[2])})`
                     },
                     inputs: ['overlayed1', 'sc2'],
@@ -101,7 +101,7 @@ const output = "tiktok.mp4";
                     filter: 'overlay',
                     options: {
                         x: '(main_w-overlay_w)/2',
-                        y: 50,
+                        y: 80,
                         enable: `between(t,${(durations[1] + durations[2])},${(durations[1] + durations[2] + durations[3])})`
                     },
                     inputs: ['overlayed2', 'sc3'],
@@ -111,7 +111,7 @@ const output = "tiktok.mp4";
                     filter: 'overlay',
                     options: {
                         x: '(main_w-overlay_w)/2',
-                        y: 50,
+                        y: 80,
                         enable: `between(t,${(durations[1] + durations[2] + durations[3])},${(durations[1] + durations[2] + durations[3] + durations[4])})`
                     },
                     inputs: ['overlayed3', 'sc4'],

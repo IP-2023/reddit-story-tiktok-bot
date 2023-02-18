@@ -47,7 +47,7 @@ const getTopPosts = async () => {
         const commentText2 = results[0].comments[1].body;
         const commentText3 = results[0].comments[2].body;
 
-        // await tts.downloadAudioFromText([postText, commentText1, commentText2, commentText3]);
+        await tts.downloadAudioFromText([postText, commentText1, commentText2, commentText3]);
 
         return results;
 

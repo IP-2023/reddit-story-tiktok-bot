@@ -39,10 +39,6 @@ const downloadAudioFromText = async (texts) => {
         });
 
     };
-
-
-
-
 };
 
 
