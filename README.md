@@ -15,7 +15,7 @@ apologies for bad language, working on creating some cleaner demos.
 
 [![tiktok demo](https://img.youtube.com/vi/Y6xPVZGumCE/0.jpg)](https://www.youtube.com/watch?v=Y6xPVZGumCE)
 
-#### Screenshots being taken and cropped based on content size
+#### Screenshots being automatically taken and cropped based on content size using puppeteer
 
 <img src="https://media.discordapp.net/attachments/615036295932280834/1075624393289519174/Untitled.png?width=638&height=929" width="300" />
 
