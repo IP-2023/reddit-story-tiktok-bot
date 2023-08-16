@@ -3,7 +3,7 @@ Uses reddit and youtube APIs to source content for tiktok generation.  Puppeteer
 
 [Additional info about the project](https://github.com/IP-2023#automated-tiktok-video-generator)
 
-[WIP Notion article about project](https://furtive-taxicab-a11.notion.site/Short-form-Video-Generator-e518f2871044420b80971f6fafb90692)
+[Read more about the project](https://www.wchprojects.com/posts/7-tiktok-generator)
 
 # Gallery 
 
